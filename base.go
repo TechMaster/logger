@@ -16,10 +16,10 @@ type LogConfig struct {
 	Top            int    // số dòng đỉnh stack trace sẽ được in ra
 }
 
-var logConfig *LogConfig
+var logConfig LogConfig
 var logFile *os.File
 
-func Init(_logConfig *LogConfig) *os.File {
+func Init(_logConfig LogConfig) *os.File {
 	logConfig = _logConfig
 	if logConfig.Log_folder != "" {
 		logFile = newLogFile(logConfig.Log_folder)
