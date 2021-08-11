@@ -15,8 +15,8 @@ var ErisStringFormat = eris.StringFormat{
 		WithTrace:    true,  // flag that enables stack trace output
 		InvertTrace:  true,  // flag that inverts the stack trace output (top of call stack shown first)
 		WithExternal: false,
-		Skip:         logConfig.skip, // Bỏ qua 11 dòng lệnh cuối cùng trong Stack
-		Top:          logConfig.top,  // Chỉ lấy 3 dòng lệnh đầu tiên
+		Skip:         logConfig.Skip, // Bỏ qua 11 dòng lệnh cuối cùng trong Stack
+		Top:          logConfig.Top,  // Chỉ lấy 3 dòng lệnh đầu tiên
 		//Mục tiêu để báo lỗi gọn hơn, stack trace đủ ngắn
 	},
 	MsgStackSep:  "\n",  // separator between error messages and stack frame data
