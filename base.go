@@ -9,11 +9,24 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
+type LogConfig struct {
+	log_folder     string // thư mục chứa log file. Nếu rỗng có nghĩa là không ghi log ra file
+	error_template string // tên view template sẽ render error page
+	skip           int    // số dòng cuối cùng trong stack trace sẽ bị bỏ qua
+	top            int    // số dòng đỉnh stack trace sẽ được in ra
+}
+
+var logConfig *LogConfig
 var logFile *os.File
 
-func InitErrLog(logFolder ...string) *os.File {
-	logFile = newLogFile(logFolder...)
-	return logFile
+func Init(_logConfig *LogConfig) *os.File {
+	logConfig = _logConfig
+	if logConfig.log_folder != "" {
+		logFile = newLogFile(logConfig.log_folder)
+		return logFile
+	} else {
+		return nil
+	}
 }
 
 // Chuyên xử lý các err mà controller trả về
@@ -45,12 +58,12 @@ func Log(ctx iris.Context, err error) {
 			})
 		} else {
 			if bytes, err := json.Marshal(e.Data); err == nil {
-				_ = ctx.View("error", iris.Map{
+				_ = ctx.View(logConfig.error_template, iris.Map{
 					"ErrorMsg": e.Error(),
 					"Data":     string(bytes),
 				})
 			} else {
-				_ = ctx.View("error", iris.Map{
+				_ = ctx.View(logConfig.error_template, iris.Map{
 					"ErrorMsg": e.Error(),
 				})
 			}

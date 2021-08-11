@@ -15,8 +15,8 @@ var ErisStringFormat = eris.StringFormat{
 		WithTrace:    true,  // flag that enables stack trace output
 		InvertTrace:  true,  // flag that inverts the stack trace output (top of call stack shown first)
 		WithExternal: false,
-		Skip:         11, // Bỏ qua 11 dòng lệnh cuối cùng trong Stack
-		Top:          3,  //  Chỉ lấy 3 dòng lệnh đầu tiên
+		Skip:         logConfig.skip, // Bỏ qua 11 dòng lệnh cuối cùng trong Stack
+		Top:          logConfig.top,  // Chỉ lấy 3 dòng lệnh đầu tiên
 		//Mục tiêu để báo lỗi gọn hơn, stack trace đủ ngắn
 	},
 	MsgStackSep:  "\n",  // separator between error messages and stack frame data
@@ -34,18 +34,26 @@ func logErisError(err *eris.Error) {
 		colorReset := string("\033[0m")
 		colorMagenta := string("\033[35m")
 		fmt.Println(colorMagenta, formattedStr, colorReset)
-		var textToFile string
 
-		if dataString := marshalErisData2JSON(err); dataString != "" { //Nếu có dữ liệu đi kèm thì cũng ghi ra file
+		dataString := marshalErisData2JSON(err)
+
+		if dataString != "" { //Nếu có dữ liệu đi kèm thì cũng ghi ra file
 			fmt.Println(colorMagenta, dataString, colorReset)
-			textToFile = time.Now().Format("2006 01 02-15:04:05 - ") + formattedStr + "\n" + dataString + "\n\n"
-		} else {
-			textToFile = time.Now().Format("2006 01 02-15:04:05 - ") + formattedStr + "\n\n"
 		}
-		//Lỗi Panic và Error nhất thiết phải ghi vào file !
-		if _, err := logFile.WriteString(textToFile); err != nil {
-			panic(err)
+
+		//Lỗi Panic và Error nhất thiết phải ghi vào file. Và chỉ ghi khi log_folder được cài đặt
+		if logFile != nil {
+			var textToFile string
+			if dataString != "" { //Nếu có dữ liệu đi kèm thì cũng ghi ra file
+				textToFile = time.Now().Format("2006 01 02-15:04:05 - ") + formattedStr + "\n" + dataString + "\n\n"
+			} else {
+				textToFile = time.Now().Format("2006 01 02-15:04:05 - ") + formattedStr + "\n\n"
+			}
+			if _, err := logFile.WriteString(textToFile); err != nil {
+				panic(err)
+			}
 		}
+
 	} else {
 		fmt.Println(formattedStr) //Error Level
 	}
@@ -64,16 +72,14 @@ func todayFilename() string {
 	today := time.Now().Format("2006 01 02")
 	return today + ".txt"
 }
-func newLogFile(logFolder ...string) *os.File {
-	var log_folder string
-	if len(logFolder) == 0 {
-		log_folder = "logs/"
-	} else {
-		log_folder = logFolder[0]
+
+func newLogFile(logFolder string) *os.File {
+	if logFolder == "" {
+		return nil
 	}
 	filename := todayFilename()
 	// Open the file, this will append to the today's file if server restarted.
-	f, err := os.OpenFile(log_folder+filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	f, err := os.OpenFile(logFolder+filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		panic(err)
 	}
