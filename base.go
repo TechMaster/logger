@@ -38,37 +38,26 @@ func Log(ctx iris.Context, err error) {
 		}
 
 		if ctx.IsAjax() { //Có trả về báo lỗi dạng JSON cho REST API request không?
-			if e.Data == nil { //không có dữ liệu đi kèm thì chỉ cần in thông báo lỗi
-				ctx.StatusCode(e.Code)
-				_, _ = ctx.JSON(e.Error())
-			} else { // Có dữ liệu bổ xung
-				errorBody := map[string]interface{}{
-					"error": e.Error(),
-					"data":  e.Data,
-				}
-				ctx.StatusCode(e.Code)
-				_, _ = ctx.JSON(errorBody) //Trả về cho client gọi REST API
+			errorBody := iris.Map{
+				"error": e.Error(),
 			}
-			return //Xuất ra JSON rồi thì không hiển thị Error Page nữa
+			if e.Data != nil { //không có dữ liệu đi kèm thì chỉ cần in thông báo lỗi
+				errorBody["data"] = e.Data
+			}
+			ctx.StatusCode(e.Code)
+			_, _ = ctx.JSON(errorBody) //Trả về cho client gọi REST API
+			return                     //Xuất ra JSON rồi thì không hiển thị Error Page nữa
 		}
 
-		if e.Data == nil {
-			_ = ctx.View("error", iris.Map{
-				"ErrorMsg": e.Error(),
-			})
-		} else {
+		// Nếu request không phải là REST request (AJAX request) thì render error page
+		ctx.ViewData("ErrorMsg", e.Error())
+		if e.Data != nil {
 			if bytes, err := json.Marshal(e.Data); err == nil {
-				_ = ctx.View(logConfig.Error_template, iris.Map{
-					"ErrorMsg": e.Error(),
-					"Data":     string(bytes),
-				})
-			} else {
-				_ = ctx.View(logConfig.Error_template, iris.Map{
-					"ErrorMsg": e.Error(),
-				})
+				ctx.ViewData("Data", string(bytes))
 			}
-
 		}
+		_ = ctx.View(logConfig.Error_template)
+		return
 
 	default: //Lỗi thông thường
 		fmt.Println(err.Error()) //In ra console
@@ -76,10 +65,11 @@ func Log(ctx iris.Context, err error) {
 			ctx.StatusCode(iris.StatusInternalServerError)
 			_, _ = ctx.JSON(err.Error())
 		} else {
-			_ = ctx.View("error", iris.Map{
+			_ = ctx.View(logConfig.Error_template, iris.Map{
 				"ErrorMsg": err.Error(),
 			})
 		}
+		return
 	}
 }
 
