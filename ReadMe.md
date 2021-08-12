@@ -22,8 +22,16 @@ import (
 func main() {
 	app := iris.New() 
 
-	logFile := logger.InitErrLog("logs/")  //chọn thư mục để logs ra file
-	defer logFile.Close()
+	logFile := logger.Init(logger.LogConfig{
+		Log_folder:     "logs/", //Nếu để rỗng thì không ghi log
+		Error_template: "error", //Cần phải có file error.html ở thư mục views để render error page
+		Top:            3,       //Lấy 3 hàm đầu tiên trên đỉnh stack trace
+		Skip:           11,      //hoặc loại đi 11 hàm đáy của stack trace
+	})
+	if logFile != nil {
+		defer logFile.Close()
+	}
+
   app.Get("/", homepage)
 	app.Listen(":8080")
 }
@@ -37,6 +45,62 @@ func homepage(ctx iris.Context) {
   }
 }
 ```
+
+## Ví dụ bổ xung
+```go
+func Handler(ctx iris.Context) {
+	if err := PhuTro("val1", 10); err != nil {
+		logger.Log(err)  //Log error ở đây sau đó return luôn
+		return
+	}
+	
+}
+
+func PhuTro(para1 string, para2 int) error {
+	if err := Db.Connnect(connectionstr); err != nil {
+    //Luôn bọc lỗi thông thường bằng eris để có stack trace
+		return eris.NewFromMsg(err, "Lỗi kết nối CSDL").BadRequest.SetType(eris.SysError) 
+	}
+}
+```
+
+## Trả về JSON Error hay HTML Error Page tuỳ thuộc vào
+
+Request gọi lên là AJAX Request hoặc có Content Type là "application/json"
+
+```go
+func Log(ctx iris.Context, err error) {
+	//Trả về JSON error khi client gọi lên bằng AJAX hoặc request.ContentType dạng application/json
+	shouldReturnJSON := ctx.IsAjax() || ctx.GetContentTypeRequested() == "application/json"
+  ...
+}
+```
+
+## Xử lý JSON Error trả về
+Cấu trúc JSON trả về gồm 2 trường:
+1. error dạng string
+2. data dạng struct bất kỳ
+
+Hãy truy cập `err.responseJSON` để lấy dữ liệu lỗi trả về
+
+```javascript
+function sendEmail(type) {
+  $.post("/email/send?type=" + type, 
+  { 
+    to: $("#to").val(),
+    subject: $("#subject").val(),
+    body: $("#body").val(),
+  })
+    .done(data => {  //status code 200
+      $("#result").html(data).css('color', 'black');
+    })
+    .fail(data => {  //400, 401, 404, 500
+      console.log(err);
+      $("#result").html(err.responseJSON.error).css('color', 'red');
+    })
+}
+```
+
 
 ## Publish new module
 ```bash
