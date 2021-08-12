@@ -31,13 +31,15 @@ func Init(_logConfig LogConfig) *os.File {
 
 // Chuyên xử lý các err mà controller trả về
 func Log(ctx iris.Context, err error) {
+	//Trả về JSON error khi client gọi lên bằng AJAX hoặc request.ContentType dạng application/json
+	shouldReturnJSON := ctx.IsAjax() || ctx.GetContentTypeRequested() == "application/json"
 	switch e := err.(type) {
 	case *eris.Error:
 		if e.ErrType > eris.WARNING { //Chỉ log ra console hoặc file
 			logErisError(e)
 		}
 
-		if ctx.IsAjax() { //Có trả về báo lỗi dạng JSON cho REST API request không?
+		if shouldReturnJSON { //Có trả về báo lỗi dạng JSON cho REST API request không?
 			errorBody := iris.Map{
 				"error": e.Error(),
 			}
@@ -61,7 +63,7 @@ func Log(ctx iris.Context, err error) {
 
 	default: //Lỗi thông thường
 		fmt.Println(err.Error()) //In ra console
-		if ctx.IsAjax() {        //Trả về JSON
+		if shouldReturnJSON {    //Trả về JSON
 			ctx.StatusCode(iris.StatusInternalServerError)
 			_, _ = ctx.JSON(err.Error())
 		} else {
