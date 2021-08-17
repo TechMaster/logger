@@ -4,7 +4,7 @@ Thư viện này viết để log lỗi.
 
 ## Cài đặt
 ```
-go get -u github.com/Techmaster/logger
+go get -u github.com/TechMaster/logger
 ```
 
 Ví dụ một ứng dụng web đơn giản log lỗi khi gọi vào database. Chú ý chỉ những lỗi eris cập độ SYSERR và PANIC mới ghi vào log l
