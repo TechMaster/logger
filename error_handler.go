@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"mainsite/eris"
+	"github.com/TechMaster/eris"
 
 	"github.com/goccy/go-json"
 )
