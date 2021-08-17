@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/TechMaster/eris"
+	"mainsite/eris"
+
 	"github.com/goccy/go-json"
 	"github.com/kataras/iris/v12"
 )
