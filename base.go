@@ -21,7 +21,6 @@ func Init(_logConfig ...LogConfig) *os.File {
 			LogFolder:     "logs/", // thư mục chứa log file. Nếu rỗng có nghĩa là không ghi log ra file
 			ErrorTemplate: "error", // tên view template sẽ render error page
 			InfoTemplate:  "info",  // tên view template sẽ render info page
-			Skip:          11,      // số dòng cuối cùng trong stack trace sẽ bị bỏ qua
 			Top:           3,       // số dòng đầu tiên trong stack trace sẽ được giữ lại
 		}
 	}

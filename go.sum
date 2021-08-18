@@ -11,6 +11,8 @@ github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398 h1:WDC6ySpJzbxG
 github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398/go.mod h1:a1uqRtAwp2Xwc6WNPJEufxJ7fx3npB4UV/JOLmbu5I0=
 github.com/TechMaster/eris v0.1.9 h1:w/bLd03WyULkEHvEyRIROcDdPd8CoYVJHIkqAL3PR+I=
 github.com/TechMaster/eris v0.1.9/go.mod h1:kLyEzmhX9+khT0cY520nl8RtAZGbH/MAI+CnypKsJo8=
+github.com/TechMaster/eris v0.1.10 h1:OH6ntOf1Z4NZzXPUoSEotOERofvCgzqBuU7uYnb7FVs=
+github.com/TechMaster/eris v0.1.10/go.mod h1:kLyEzmhX9+khT0cY520nl8RtAZGbH/MAI+CnypKsJo8=
 github.com/ajg/form v1.5.1 h1:t9c7v8JUKu/XxOGBU0yjNpaMloxGEJhUkqFRq0ibGeU=
 github.com/ajg/form v1.5.1/go.mod h1:uL1WgH+h2mgNtvBq0339dVnzXdBETtL2LeUXaIv25UY=
 github.com/andybalholm/brotli v1.0.2 h1:JKnhI/XQ75uFBTiuzXpzFrUriDPiZjlOSzh6wXogP0E=

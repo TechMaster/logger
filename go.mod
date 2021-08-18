@@ -3,7 +3,7 @@ module github.com/TechMaster/logger
 go 1.16
 
 require (
-	github.com/TechMaster/eris v0.1.9
+	github.com/TechMaster/eris v0.1.10
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/goccy/go-json v0.7.4
 	github.com/google/go-querystring v1.1.0 // indirect
