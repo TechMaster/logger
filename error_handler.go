@@ -42,7 +42,7 @@ func logErisError(err *eris.Error) {
 			fmt.Println(colorMagenta, dataString, colorReset)
 		}
 
-		//Lỗi Panic và Error nhất thiết phải ghi vào file. Và chỉ ghi khi log_folder được cài đặt
+		//Lỗi Panic và Error nhất thiết phải ghi vào file. Và chỉ ghi khi LogFolder được cài đặt
 		if logFile != nil {
 			var textToFile string
 			if dataString != "" { //Nếu có dữ liệu đi kèm thì cũng ghi ra file
