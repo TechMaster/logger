@@ -26,7 +26,12 @@ func Log(ctx iris.Context, err error) {
 			if e.Data != nil { //không có dữ liệu đi kèm thì chỉ cần in thông báo lỗi
 				errorBody["data"] = e.Data
 			}
-			ctx.StatusCode(e.Code)
+			if e.Code > 300 {
+				ctx.StatusCode(e.Code)
+			} else {
+				ctx.StatusCode(iris.StatusInternalServerError)
+			}
+
 			_, _ = ctx.JSON(errorBody) //Trả về cho client gọi REST API
 			return                     //Xuất ra JSON rồi thì không hiển thị Error Page nữa
 		}
