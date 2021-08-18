@@ -6,7 +6,6 @@ type LogConfig struct {
 	LogFolder     string // thư mục chứa log file. Nếu rỗng có nghĩa là không ghi log ra file
 	ErrorTemplate string // tên view template sẽ render error page
 	InfoTemplate  string // tên view template sẽ render info page
-	Skip          int    // số dòng cuối cùng trong stack trace sẽ bị bỏ qua
 	Top           int    // số dòng đỉnh stack trace sẽ được in ra
 }
 

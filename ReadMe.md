@@ -60,7 +60,6 @@ func main() {
 		ErrorTemplate: "error", //Cần phải có file error.html ở thư mục views để render error page
     InfoTemplate:  "info", //Cần phải có file error.html ở thư mục views để render error page
 		Top:            3,       //Lấy 3 hàm đầu tiên trên đỉnh stack trace
-		Skip:           11,      //hoặc loại đi 11 hàm đáy của stack trace
 	})
 	if logFile != nil {
 		defer logFile.Close()
